@@ -15,15 +15,15 @@ class Player {
     set handobjects(handobjects) {
         this._handobjects = handobjects;
     }
+    get handobjects() {
+        return this._handobjects;
+    }
     set originalbet(originalbet) {
         this._originalbet = originalbet;
         this.currentbet = originalbet;
     }
     get originalbet() {
         return this._originalbet;
-    }
-    get handobjects() {
-        return this._handobjects;
     }
     set balance(balance) {
         this._balance = balance;
