@@ -32,14 +32,14 @@ class Table {
         //Create and empty new hands for players
         for (var i = 0; i < playersthisround.length; i++) {
             var handarr = [];
-            handarr.push(new hand.Hand(playersthisround[i], deck))
-            playersthisround[i].handobjects = handarr
+            handarr.push(new hand.Hand(playersthisround[i], deck));
+            playersthisround[i].handobjects = handarr;
         }
         //Deal new starting cards
         for (var twice = 0; twice < 2; twice++){
             for (var i = 0; i < playersthisround.length; i++){
                 for (var i2 = 0; i2 < playersthisround[i].handobjects.length; i2++){
-                    playersthisround[i].handobjects[i2].hit = deck.hit
+                    playersthisround[i].handobjects[i2].hit;
                 }
             }
         }
@@ -64,22 +64,48 @@ class Table {
         //Ask users for input
         for (var i = 0; i < playersthisround.length; i++){
             for (var i2 = 0; i2 < playersthisround[i].handobjects.length; i2++) {
-            //Do until a valid action is given
+                //Do until a valid action is given
                 var inputtext = playersthisround[i].name + " what would you like to do with the hand:" + playersthisround[i].handobjects[i2].hand + "? Your options are: " + playersthisround[i].handobjects[i2].possibleactions
-                new Promise(resolve => {
-                playersthisround[i].handobjects[i2].quedaction = input.getinput(inputtext, playersthisround[i].handobjects[i2].possibleactions);
-                resolve(playersthisround[i].quedaction);
-            })
+                var async = require('async');
+                async.series([
+                playersthisround[i].handobjects[i2].quedaction = input.getinput(inputtext, playersthisround[i].handobjects[i2].possibleactions),
+            ]);
             }
-
-            
-
-            
-            
-            
-
         }  
         
+        //Wait for everyone to have something in playerobject.quedaction
+
+        for (var i = 0; i < playersthisround.length; i++){
+            for (var i2 = 0; i2 < playersthisround[i].handobjects.length; i2++) {
+                var chosenhand = playersthisround[i].handobjects[i2]
+                var action = chosenhand.quedaction
+
+                if (action = "hit") {
+                    chosenhand.hit;
+                }
+                if (action = "split") {
+                    chosenhand.split;
+                }
+                if (action = "double down") {
+                    chosenhand.doubledown;
+                }
+                if (action = "surrender") {
+                    chosenhand.surrender;
+                }
+                if (action = "") {
+                    chosenhand.stay;
+                }
+                if (action = "stay") {
+                    chosenhand.stay;
+                }
+        }
+    }
+
+
+
+
+
+
     }
     set dealerhand(dealerhand) {
         this._dealerhand = dealerhand;
