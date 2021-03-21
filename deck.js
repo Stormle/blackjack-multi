@@ -27,6 +27,7 @@ function newdeck() {
         var numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"];
         var deck = [];
         //shuffle 5 decks
+        
         for (var a = 0; a < 6; a++) {
             for (var i = 0; i < suites.length; i++) {
                 for (var i2 = 0; i2 < numbers.length; i2++) {
