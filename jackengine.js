@@ -5,106 +5,12 @@ const hand = require("./hand");
 
 class Table {
     constructor(players){
-        var deck = new deck1.Deck;
-        console.log("Welcome to the blackjack table! Place your bets, please.");
-        
-        //Let players bet here and append them to the playersthisround array
 
-
+        this._players = [];
+        this._playersthisround = [];
+        this._thirtyseconds = false
+        this._tablestate = "startup"
         var playersthisround = [];
-        
-        //DEBUG SHIT!!! THIS IS HERE TO REPLACE USER INPUT
-        playersthisround.push(players[0]);
-        playersthisround[0].originalbet = 10
-
-        playersthisround.push(players[1]);
-        playersthisround[1].originalbet = 33
-        //DEBUG SHIT ENDS!!!
-        
-
-
-        //Empty dealer's hand
-        this._dealerhand = [];
-
-        //Deal dealer's card
-        this._dealerhand.push(deck.hit);
-        
-        //Create and empty new hands for players
-        for (var i = 0; i < playersthisround.length; i++) {
-            var handarr = [];
-            handarr.push(new hand.Hand(playersthisround[i], deck));
-            playersthisround[i].handobjects = handarr;
-        }
-        //Deal new starting cards
-        for (var twice = 0; twice < 2; twice++){
-            for (var i = 0; i < playersthisround.length; i++){
-                for (var i2 = 0; i2 < playersthisround[i].handobjects.length; i2++){
-                    playersthisround[i].handobjects[i2].hit;
-                }
-            }
-        }
-        
-
-        //Print out what the starting situation is.
-        console.log("The dealer's cards are: " + this._dealerhand);
-        
-        for (var i = 0; i < playersthisround.length; i++){
-            var handstring = ""
-            for (var i2 = 0; i2 < playersthisround[i].handobjects.length; i2++) {
-                handstring += String(playersthisround[i].handobjects[i2].hand)
-                if (playersthisround[i].handobjects.length > 1 && i2 != playersthisround[i].handobjects[i2].length) {
-                handstring += " - "
-                }
-            }
-            
-            console.log("Player: " + playersthisround[i].name + " - you have: " + handstring)
-        }
-        
-
-        //Ask users for input
-        for (var i = 0; i < playersthisround.length; i++){
-            for (var i2 = 0; i2 < playersthisround[i].handobjects.length; i2++) {
-                //Do until a valid action is given
-                var inputtext = playersthisround[i].name + " what would you like to do with the hand:" + playersthisround[i].handobjects[i2].hand + "? Your options are: " + playersthisround[i].handobjects[i2].possibleactions
-                var async = require('async');
-                async.series([
-                playersthisround[i].handobjects[i2].quedaction = input.getinput(inputtext, playersthisround[i].handobjects[i2].possibleactions),
-            ]);
-            }
-        }  
-        
-        //Wait for everyone to have something in playerobject.quedaction
-
-        for (var i = 0; i < playersthisround.length; i++){
-            for (var i2 = 0; i2 < playersthisround[i].handobjects.length; i2++) {
-                var chosenhand = playersthisround[i].handobjects[i2]
-                var action = chosenhand.quedaction
-
-                if (action = "hit") {
-                    chosenhand.hit;
-                }
-                if (action = "split") {
-                    chosenhand.split;
-                }
-                if (action = "double down") {
-                    chosenhand.doubledown;
-                }
-                if (action = "surrender") {
-                    chosenhand.surrender;
-                }
-                if (action = "") {
-                    chosenhand.stay;
-                }
-                if (action = "stay") {
-                    chosenhand.stay;
-                }
-        }
-    }
-
-
-
-
-
 
     }
     set dealerhand(dealerhand) {
@@ -113,9 +19,165 @@ class Table {
     get dealerhand() {
         return this._dealerhand;
     }
+    set addplayer(players) {
+        this._players.push(players);
+    }
+    get addplayer() {
+        return this._players;
+    }
+    set deck(deck) {
+        this._deck = deck;
+    }
+    get deck() {
+        return this._deck;
+    }
+    set addplayerthisround(playersthisround) {
+        this._playersthisround.push(playersthisround);
+    }
+    get addplayerthisround() {
+        return this._playersthisround;
+    }
+    set thirtyseconds(thirtyseconds) {
+        this._thirtyseconds = thirtyseconds;
+    }
+    get thirtyseconds() {
+        return this._thirtyseconds;
+    }
+    set tablestate(tablestate) {
+        this._tablestate = tablestate;
+    }
+    get tablestate() {
+        return this._tablestate;
+    }
+    get tick(){
+        //Game logic code here
+        if (this._tablestate == "startup") {
+            console.log("Welcome to the blackjack table! Place your bets, please.");
+            tableobject._tablestate = "waiting for players";
+        }
+
+        if (tableobject._tablestate == "waiting for players") {
+
+        }
+
+        if (tableobject._tablestate == "round start") {
+            startgame(this);
+        }
+
+        if (this._tablestate == "waiting for player actions") {
+            waitforplayeractions(this);
+        }
+
+        if (this._tablestate == "do player actions") {
+            doplayeraction(this)
+        }
+
+        if (this._tablestate == "actionsdone") {
+            
+        }
+        return;
+    }
 }
 
 
+function doplayeraction(tableobject) {
+    for (var i = 0; i < tableobject._playersthisround.length; i++){
+        for (var i2 = 0; i2 < tableobject._playersthisround[i].handobjects.length; i2++) {
+            var chosenhand = tableobject._playersthisround[i].handobjects[i2];
+            var action = chosenhand.quedaction;
+
+            if (action = "hit") {
+                chosenhand.hit;
+            }
+            if (action = "split") {
+                chosenhand.split;
+            }
+            if (action = "double down") {
+                chosenhand.doubledown;
+            }
+            if (action = "surrender") {
+                chosenhand.surrender;
+            }
+            if (action = "") {
+                chosenhand.stay;
+            }
+            if (action = "stay") {
+                chosenhand.stay;
+            }
+    }
+}
+}
+
+function waitforplayeractions(tableobject) {
+//Print out what the starting situation is.
+        console.log("The dealer's cards are: " + tableobject._dealerhand);
+        
+        for (var i = 0; i < tableobject._playersthisround.length; i++){
+            var handstring = ""
+            var firstemptyhand
+            var firstemptyfound = false
+            for (var i2 = 0; i2 < tableobject._playersthisround[i].handobjects.length; i2++) {
+                handstring += String(tableobject._playersthisround[i].handobjects[i2].hand)
+                if (tableobject._playersthisround[i].handobjects.length > 1 && i2 != tableobject._playersthisround[i].handobjects[i2].length) {
+                handstring += " - ";
+                }
+                if (firstemptyfound == false && tableobject._playersthisround[i].handobjects[i2].quedaction == "") {
+                    firstemptyhand = tableobject._playersthisround[i].handobjects[i2];
+                    firstemptyfound = true;
+                }
+                
+            }
+            
+            var totaltext = ""
+            if (firstemptyfound == true){
+                if (tableobject._playersthisround[i]._handobjects.length < 1) {
+                    totaltext = "Player: " + tableobject._playersthisround[i].name + " - you have: " + handstring + " What would you like to do to the hand: " + firstemptyhand.hand + "? Your options are: " + firstemptyhand.possibleactions;
+                } else {
+                    totaltext = "Player: " + tableobject._playersthisround[i].name + " - you have: " + handstring + " What would you like to do? Your options are: " + firstemptyhand.possibleactions;
+                }
+                console.log(totaltext)
+            }
+        }
+        
+            var playersnotready = false;
+            for (var i = 0; i < this._playersthisround.length; i++){
+                for (var i2 = 0; i2 < this._playersthisround[i].handobjects.length; i2++) { 
+                    if (this._playersthisround[i].handobjects[i2].quedaction == "") {
+                        playersnotready = true;
+                    }
+                }
+            }
+            if (playersnotready == false){
+                this._tablestate = "do player actions";
+            }
+        
+}
+
+function startgame(tableobject) {
+        //Empty dealer's hand
+        tableobject._dealerhand = [];
+
+        //Generate deck
+        tableobject._deck = new deck1.Deck;
+
+        //Deal dealer's card
+        tableobject._dealerhand.push(tableobject._deck.hit);
+        
+        //Create and empty new hands for players
+        for (var i = 0; i < tableobject._playersthisround.length; i++) {
+            tableobject._playersthisround[i]._handobjects = [];
+            tableobject._playersthisround[i]._handobjects.push(new hand.Hand(tableobject.playersthisround[i], tableobject._deck));
+        }
+        //Deal new starting cards
+        for (var twice = 0; twice < 2; twice++){
+            for (var i = 0; i < tableobject._playersthisround.length; i++){
+                for (var i2 = 0; i2 < tableobject._playersthisround[i]._handobjects.length; i2++){
+                    tableobject._playersthisround[i].handobjects[i2].hit;
+                }
+            }
+        }
+        tableobject._tablestate = "waiting for player actions";
+}
 
 
 
