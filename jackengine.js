@@ -4,13 +4,13 @@ const input = require("./getinput");
 const hand = require("./hand");
 
 class Table {
-    constructor(players){
+    constructor(){
 
         this._players = [];
         this._playersthisround = [];
         this._thirtyseconds = false
         this._tablestate = "startup"
-        var playersthisround = [];
+        this._playersthisround = [];
 
     }
     set dealerhand(dealerhand) {
@@ -53,14 +53,14 @@ class Table {
         //Game logic code here
         if (this._tablestate == "startup") {
             console.log("Welcome to the blackjack table! Place your bets, please.");
-            tableobject._tablestate = "waiting for players";
+            this._tablestate = "waiting for players";
         }
 
-        if (tableobject._tablestate == "waiting for players") {
+        if (this._tablestate == "waiting for players") {
 
         }
 
-        if (tableobject._tablestate == "round start") {
+        if (this._tablestate == "round start") {
             startgame(this);
         }
 
@@ -86,22 +86,22 @@ function doplayeraction(tableobject) {
             var chosenhand = tableobject._playersthisround[i].handobjects[i2];
             var action = chosenhand.quedaction;
 
-            if (action = "hit") {
+            if (action == "hit") {
                 chosenhand.hit;
             }
-            if (action = "split") {
+            if (action == "split") {
                 chosenhand.split;
             }
-            if (action = "double down") {
+            if (action == "double down") {
                 chosenhand.doubledown;
             }
-            if (action = "surrender") {
+            if (action == "surrender") {
                 chosenhand.surrender;
             }
-            if (action = "") {
+            if (action == "") {
                 chosenhand.stay;
             }
-            if (action = "stay") {
+            if (action == "stay") {
                 chosenhand.stay;
             }
     }
@@ -140,9 +140,9 @@ function waitforplayeractions(tableobject) {
         }
         
             var playersnotready = false;
-            for (var i = 0; i < this._playersthisround.length; i++){
-                for (var i2 = 0; i2 < this._playersthisround[i].handobjects.length; i2++) { 
-                    if (this._playersthisround[i].handobjects[i2].quedaction == "") {
+            for (var i = 0; i < tableobject._playersthisround.length; i++){
+                for (var i2 = 0; i2 < tableobject._playersthisround[i].handobjects.length; i2++) { 
+                    if (tableobject._playersthisround[i].handobjects[i2].quedaction == "") {
                         playersnotready = true;
                     }
                 }
@@ -166,7 +166,7 @@ function startgame(tableobject) {
         //Create and empty new hands for players
         for (var i = 0; i < tableobject._playersthisround.length; i++) {
             tableobject._playersthisround[i]._handobjects = [];
-            tableobject._playersthisround[i]._handobjects.push(new hand.Hand(tableobject.playersthisround[i], tableobject._deck));
+            tableobject._playersthisround[i]._handobjects.push(new hand.Hand(tableobject._playersthisround[i], tableobject._deck));
         }
         //Deal new starting cards
         for (var twice = 0; twice < 2; twice++){

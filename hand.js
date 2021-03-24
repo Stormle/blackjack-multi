@@ -6,6 +6,7 @@ class Hand {
         this._deckinuse = deck;
         this._classowner = owner;
         this._busted = false;
+        this._quedaction = "";
     }
 
     set hand(hand) {
