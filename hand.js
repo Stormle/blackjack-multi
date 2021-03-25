@@ -6,15 +6,26 @@ class Hand {
         this._deckinuse = deck;
         this._classowner = owner;
         this._busted = false;
-        this._quedaction = "";
+        this._quedaction = "waiting";
+        this._lowesthandvalue = "";
+        this._originalbet = owner._originalbet
+        this._currentbet = owner._originalbet
     }
 
     set hand(hand) {
         this._hand = hand;
-        this._handtotal = gethandtotal(this._hand);
-        this._possibleactions = getpossibleactions(this._handtotal, this._hand, this._classowner);
+        this._handtotal = gethandtotal(this);
+        this._possibleactions = getpossibleactions(this);
         if (this._possibleactions.includes("Busted. Better luck next time!")) {
+            if (this._classowner._name != "oqjnczmqj3u4rda81h1a") {
+                console.log("Player: " + this._classowner._name + " has: " + this._hand + " - " + this._lowesthandvalue + " busted. Better luck next time!")
+            }
             this._busted = true
+        } else if (this._possibleactions.includes("Blackjack!")) {
+            if (this._classowner._name != "oqjnczmqj3u4rda81h1a") {
+                console.log("Player: " + this._classowner._name + "- You have:" + this._hand + " - Black jack! ")
+            }
+            this._quedaction = "win"
         }
     }
     get hand() {
@@ -25,6 +36,30 @@ class Hand {
     }
     get busted() {
         return this._busted;
+    }
+    set currentbet(currentbet){
+        this._currentbet = currentbet;
+    }
+    get currentbet() {
+        return this._currentbet;
+    }
+    set originalbet(originalbet){
+        this._originalbet = originalbet;
+    }
+    get busted() {
+        return this._busted;
+    }
+    set handvalues(handvalues){
+        this._handvalues = handvalues;
+    }
+    get handvalues() {
+        return this._handvalues;
+    }
+    set lowesthandvalue(lowesthandvalue){
+        this._lowesthandvalue = lowesthandvalue;
+    }
+    get lowesthandvalue() {
+        return this._lowesthandvalue;
     }
     set classowner(owner){
         this._classowner = owner;
@@ -55,16 +90,28 @@ class Hand {
     }
     get hit() {
         this._hand.push(this._deckinuse.hit);
-        this._handtotal = gethandtotal(this._hand);
-        this._possibleactions = getpossibleactions(this._handtotal, this._hand, this._classowner);
+        this._handtotal = gethandtotal(this);
+        this._possibleactions = getpossibleactions(this);
         if (this._possibleactions.includes("Busted. Better luck next time!")) {
-            this._busted = true;
+            if (this._classowner._name != "oqjnczmqj3u4rda81h1a") {
+                console.log("Player: " + this._classowner._name + " has: " + this._hand + " - " + this._lowesthandvalue + " busted. Better luck next time!")
+            }
+            this._busted = true
+        } else if (this._possibleactions.includes("Blackjack!")) {
+            if (this._classowner._name != "oqjnczmqj3u4rda81h1a") {
+            console.log("Player: " + this._classowner._name + "- You have:" + this._hand + " - Black jack! ")
+            }
+            this._quedaction = "win"
         }
+        this._quedaction = "waiting"
         return;
     }
     get split(){
         //Get cardobjects, split it in half, hit 2 new cards, save hands
-        if (Number(this._classowner._balance) > Number(this.classowner._originalbet) * 2){
+        if (Number(this._classowner._balance) > Number(this._originalbet) + this._classowner.currentbet){
+            var newhandarr = []
+            var getexistingobjects = []
+            var newoldcards = []
             var newhand = new Hand(this._classowner, this._deckinuse);
             newhandarr = [this._hand[1], this._deckinuse.hit];
             newhand.hand = newhandarr;
@@ -72,23 +119,42 @@ class Hand {
             getexistingobjects.push(newhand)
             this.classowner._handobjects = getexistingobjects
             newoldcards = [this._hand[0], this.deckinuse.hit];
-            this._hand = newoldcards;
-            this._handtotal = gethandtotal(this._hand);
-            this._possibleactions = getpossibleactions(this._hand);
-            this._classowner._currentbet += this._classowner._originalbet
+            this.hand = newoldcards;
+            this._handtotal = gethandtotal(this);
+            this._possibleactions = getpossibleactions(this);
+            this._classowner._currentbet += Number(this._originalbet)
+            this._quedaction = "waiting"
+            if (this._possibleactions.includes("Blackjack!")) {
+                if (this._classowner._name != "oqjnczmqj3u4rda81h1a") {
+                console.log("Player: " + this._classowner._name + "- You have:" + this._hand + " - Black jack! ")
+                }
+                this._quedaction = "win"
+                
+            }
         }
         return;
     }
     get doubledown(){
-        if (Number(this._classowner.balance) > Number(this._classowner._originalbet) * 2) {
-            this._classowner.currentbet = this._classowner.currentbet + this._classowner._originalbet
+        if (Number(this._classowner._balance) > Number(this._originalbet) * 2) {
+            this._currentbet = this._currentbet + this._originalbet
+            this._classowner._currentbet += this._originalbet
+
             this._hand.push(this._deckinuse.hit);
-            this._handtotal = gethandtotal(this._hand);
-            this._possibleactions = getpossibleactions(this._handtotal, this._hand, this._classowner);
-            if (this._possibleactions.includes("Busted. Better luck next time!")) {
-                this._busted = true;
-            }
+            this._handtotal = gethandtotal(this);
+            this._possibleactions = getpossibleactions(this);
             this._quedaction = "stay"
+            if (this._possibleactions.includes("Busted. Better luck next time!")) {
+                if (this._classowner._name != "oqjnczmqj3u4rda81h1a") {
+                    console.log("Player: " + this._classowner._name + " has: " + this._hand + " - " + this._lowesthandvalue + " busted. Better luck next time!")
+                }
+                this._quedaction = "lose"
+                this._busted = true
+            } else if (this._possibleactions.includes("Blackjack!")) {
+                if (this._classowner._name != "oqjnczmqj3u4rda81h1a") {
+                    console.log("Player: " + this._classowner._name + "- You have:" + this._hand + " - Black jack! ")
+                }
+                this._quedaction = "win"
+            }   
         }
         return;
     }
@@ -105,22 +171,24 @@ class Hand {
 
 
 
-function gethandtotal(hand) {
+function gethandtotal(handobject) {
     var handtotal = 0;
     var handnumbers = [];
     var handarray = [];
-    var acecount = 0
-    var notaces = []
+    var lowesthandvalue = "";
+    var acecount = 0;
+    var notaces = [];
+    var hand = handobject.hand;
     //Strip away suites
     for (var i = 0; i < hand.length; i++){
         handnumbers.push(Number(hand[i].slice(1, hand[i].length)));
     }
-
+    handobject.handvalues = handnumbers;
     for (var i = 0; i < handnumbers.length; i++){
         if (Number(handnumbers[i]) == 1) {
-            acecount += 1
+            acecount += 1;
         }else {
-            notaces.push(Number(handnumbers[i]))
+            notaces.push(Number(handnumbers[i]));
         }
     }
     if (acecount != 0) {
@@ -141,6 +209,9 @@ function gethandtotal(hand) {
             if (handtotal <= 21) {
                 handarray.push(handtotal);
             }
+            if (lowesthandvalue == "") {
+                lowesthandvalue = handtotal;
+            }
         }
     } else {
         //Aces not included
@@ -155,56 +226,55 @@ function gethandtotal(hand) {
         if (handtotal <= 21) {
             handarray.push(handtotal);
         }
+        if (lowesthandvalue == "") {
+            lowesthandvalue = handtotal;
+        }
     }
-
+    handobject.lowesthandvalue = Number(handtotal);
     return handarray;
 }
 
-function getpossibleactions(handnumbers, rawhand, handowner) {
+function getpossibleactions(handobject) {
     //Compute possible actions for given hand
     var possibleactions = [];
-    var rawhandarray = [];
-    //Strip away suites
-    for (var i = 0; i < rawhand.length; i++){
-        rawhandarray.push(Number(rawhand[i].slice(1, rawhand[i].length)));
-    }
+    var rawhandarray = handobject._handvalues
 
     possibleactions.push("hit");
     possibleactions.push("stay");
 
     //If split
     if (rawhandarray.length == 2){
-        if (Number(rawhandarray[0]) == Number(rawhandarray[1]) && handowner._balance > handowner._originalbet * 2 && (Number(rawhandarray[0]) + Number(rawhandarray[1])) < 20){
+        if (Number(rawhandarray[0]) == Number(rawhandarray[1]) && handobject._classowner._balance > handobject._originalbet * 2 && (Number(rawhandarray[0]) + Number(rawhandarray[1])) < 20){
             possibleactions.push("split");
-        } else if ((Number(rawhandarray[0]) + Number(rawhandarray[1])) >= 20 && handowner._balance > handowner._originalbet * 2) {
+        } else if ((Number(rawhandarray[0]) + Number(rawhandarray[1])) >= 20 && handobject._classowner._balance > handobject._originalbet * 2) {
             possibleactions.push("split");
         }
     }
 
     possibleactions.push("surrender");
 
-    if (handowner._balance > handowner._currentbet * 2) {
+    if (handobject._classowner._balance > handobject._currentbet * 2) {
         possibleactions.push("double down");
     }
 
     //Blackjack!
-    for (var i = 0; i < handnumbers.length; i++) {
-        if (handnumbers[i] == 21) {
+    for (var i = 0; i < handobject._handtotal.length; i++) {
+        if (handobject._handtotal[i] == 21) {
             possibleactions = ["Blackjack!"];
         }
     }
     isanyhandnotbusted = true
-    for (var i = 0; i < handnumbers.length; i++) {
-        if (handnumbers[i] <= 21) {
+    for (var i = 0; i < handobject._handtotal.length; i++) {
+        if (handobject._handtotal[i] <= 21) {
             isanyhandnotbusted = false;
         } 
     }
     if (isanyhandnotbusted) {
         possibleactions = ["Busted. Better luck next time!"] ;
-        this._busted = true
+        handobject._busted = true;
     }
     
-    return possibleactions
+    return possibleactions;
 }
 
 module.exports = { Hand };

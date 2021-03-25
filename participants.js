@@ -9,7 +9,7 @@ class Player {
       this._balance = balance;
       this._handobjects = [];
       this._currentbet = 0;
-      this._quedaction = "";
+
 
     }
     set handobjects(handobjects) {
@@ -45,12 +45,6 @@ class Player {
     get currentbet() {
         return this._currentbet;
     }  
-    set quedaction(quedaction) {
-        this._quedaction = quedaction;
-    }
-    get quedaction() {
-        return this._quedaction;
-    }
     get split() {
         return this._split;
     }
